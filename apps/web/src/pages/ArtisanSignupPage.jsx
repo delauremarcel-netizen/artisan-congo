@@ -53,12 +53,13 @@ export default function ArtisanSignupPage() {
 
       // 3. Create Artisan Profile
       await pb.collection('artisans').create({
-        userId: user.id,
-        metier: formData.metier,
-        localisation: formData.localisation,
+        nom: formData.nom,
+        email: formData.email,
+        categorie: formData.metier,
+        ville: formData.localisation,
         telephone: formData.telephone,
         description: formData.description,
-        statut: 'actif'
+        statut: 'pending'
       }, { $autoCancel: false });
 
       navigate('/dashboard-artisan');
