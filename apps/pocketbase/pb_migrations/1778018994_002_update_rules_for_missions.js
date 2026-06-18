@@ -1,0 +1,24 @@
+/// <reference path="../pb_data/types.d.ts" />
+migrate((app) => {
+  const collection = app.findCollectionByNameOrId("missions");
+  collection.listRule = "status = 'open' || company_id = @request.auth.id || @request.auth.collectionName = 'admin_users'";
+  collection.viewRule = "status = 'open' || company_id = @request.auth.id || @request.auth.collectionName = 'admin_users'";
+  collection.createRule = "company_id = @request.auth.id";
+  collection.updateRule = "company_id = @request.auth.id || @request.auth.collectionName = 'admin_users'";
+  return app.save(collection);
+}, (app) => {
+  try {
+  const collection = app.findCollectionByNameOrId("missions");
+  collection.listRule = "status = 'open' || company_id = @request.auth.id || @request.auth.collectionName = 'admin_users'";
+  collection.viewRule = "status = 'open' || company_id = @request.auth.id || @request.auth.collectionName = 'admin_users'";
+  collection.createRule = "company_id = @request.auth.id";
+  collection.updateRule = "company_id = @request.auth.id || @request.auth.collectionName = 'admin_users'";
+  return app.save(collection);
+  } catch (e) {
+    if (e.message.includes("no rows in result set")) {
+      console.log("Collection not found, skipping revert");
+      return;
+    }
+    throw e;
+  }
+})

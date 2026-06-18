@@ -1,0 +1,25 @@
+/// <reference path="../pb_data/types.d.ts" />
+migrate((app) => {
+  const collection = app.findCollectionByNameOrId("artisans");
+  const field = collection.fields.getByName("average_professionalism_rating");
+  field.required = false;
+  field.min = 0;
+  field.max = 5;
+  return app.save(collection);
+}, (app) => {
+  try {
+  const collection = app.findCollectionByNameOrId("artisans");
+  const field = collection.fields.getByName("average_professionalism_rating");
+  if (!field) { console.log("Field not found, skipping revert"); return; }
+  field.required = false;
+  field.min = 0;
+  field.max = 5;
+  return app.save(collection);
+  } catch (e) {
+    if (e.message.includes("no rows in result set")) {
+      console.log("Collection or field not found, skipping revert");
+      return;
+    }
+    throw e;
+  }
+})
